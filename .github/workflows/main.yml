@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baterkhemseg.KH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --bg:        #15120F;
+    --bg-alt:    #1C1814;
+    --bg-card:   #211C17;
+    --cream:     #EDE6D8;
+    --muted:     #A89C8B;
+    --orange:    #E8590C;
+    --orange-soft: rgba(232,89,12,0.14);
+    --blue:      #3D67AC;
+    --blue-soft: rgba(61,103,172,0.16);
+    --chalk:     #F2C14E;
+    --line:      rgba(237,230,216,0.10);
+    --line-strong: rgba(237,230,216,0.18);
+
+    --display: 'Anton', 'Arial Narrow', sans-serif;
+    --body:    'Work Sans', -apple-system, sans-serif;
+    --mono:    'Space Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--cream);
+    font-family:var(--body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  ::selection{ background:var(--orange); color:var(--bg); }
+
+  :focus-visible{
+    outline:2px solid var(--chalk);
+    outline-offset:3px;
+  }
+
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--orange);
+  }
+
+  h1,h2,h3{ font-family:var(--display); font-weight:400; letter-spacing:0.01em; }
+
+  /* ============ REVEAL ANIMATION ============ */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .reveal{ opacity:1; transform:none; transition:none; }
+    *{ animation:none !important; transition:none !important; }
+  }
+
+  /* ============ NAV ============ */
+  .nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    background:rgba(21,18,15,0.86);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:72px;
+  }
+  .nav-logo{
+    font-family:var(--display);
+    font-size:22px;
+    letter-spacing:0.02em;
+  }
+  .nav-logo span{ color:var(--orange); }
+
+  .nav-links{
+    display:flex;
+    gap:28px;
+    list-style:none;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+  .nav-links a{
+    color:var(--muted);
+    position:relative;
+    padding-bottom:4px;
+    transition:color 0.25s ease;
+  }
+  .nav-links a:hover{ color:var(--cream); }
+  .nav-links a::after{
+    content:'';
+    position:absolute;
+    left:0; bottom:0;
+    width:0; height:1px;
+    background:var(--orange);
+    transition:width 0.25s ease;
+  }
+  .nav-links a:hover::after{ width:100%; }
+
+  .nav-toggle{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:8px;
+  }
+  .nav-toggle span{
+    width:22px; height:2px; background:var(--cream); display:block;
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    padding-top:72px;
+  }
+  .hero-court{
+    position:absolute;
+    top:50%; right:-10%;
+    transform:translateY(-50%);
+    width:780px;
+    max-width:90vw;
+    opacity:0.55;
+    pointer-events:none;
+  }
+  .hero-content{
+    position:relative;
+    z-index:2;
+    max-width:760px;
+  }
+  .hero .eyebrow{ display:block; margin-bottom:18px; }
+  .hero h1{
+    font-size:clamp(54px, 10vw, 118px);
+    line-height:0.96;
+    color:var(--cream);
+    text-transform:uppercase;
+  }
+  .hero h1 .dot{ color:var(--orange); }
+  .hero-tagline{
+    margin-top:22px;
+    font-size:19px;
+    color:var(--muted);
+    max-width:520px;
+  }
+  .hero-tagline strong{ color:var(--cream); font-weight:600; }
+
+  .hero-meta{
+    display:flex;
+    gap:32px;
+    margin-top:40px;
+    flex-wrap:wrap;
+  }
+  .hero-meta div{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    border-left:2px solid var(--orange);
+    padding-left:12px;
+  }
+  .hero-meta div b{
+    display:block;
+    font-family:var(--body);
+    font-size:15px;
+    font-weight:600;
+    color:var(--cream);
+    letter-spacing:0;
+    text-transform:none;
+    margin-top:2px;
+  }
+
+  .scroll-cue{
+    position:absolute;
+    bottom:36px;
+    left:32px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.1em;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-cue::after{
+    content:'';
+    width:1px; height:34px;
+    background:linear-gradient(var(--orange), transparent);
+    animation:cueMove 1.8s ease-in-out infinite;
+  }
+  @keyframes cueMove{ 0%,100%{ opacity:0.3 } 50%{ opacity:1 } }
+
+  /* ============ SECTION SHELL ============ */
+  section{ padding:120px 0; position:relative; }
+  .section-head{ margin-bottom:56px; max-width:600px; }
+  .section-head .eyebrow{ display:block; margin-bottom:14px; }
+  .section-head h2{
+    font-size:clamp(34px, 5vw, 52px);
+    text-transform:uppercase;
+    color:var(--cream);
+  }
+  .section-head p{ color:var(--muted); margin-top:14px; font-size:16px; max-width:480px; }
+
+  .divider{
+    height:1px;
+    background:var(--line);
+    margin:0 32px;
+  }
+
+  /* ============ ABOUT ============ */
+  .about .wrap{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:64px;
+    align-items:start;
+  }
+  .about-text p{ color:var(--muted); font-size:16px; margin-bottom:18px; }
+  .about-text p:last-child{ margin-bottom:0; }
+  .about-text strong{ color:var(--cream); font-weight:600; }
+
+  .id-card{
+    background:var(--bg-card);
+    border:1px solid var(--line-strong);
+    border-radius:4px;
+    padding:28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .id-card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:4px;
+    background:linear-gradient(90deg, var(--orange), var(--blue));
+  }
+  .id-card-top{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:24px;
+    padding-bottom:20px;
+    border-bottom:1px dashed var(--line-strong);
+  }
+  .id-avatar{
+    width:56px; height:56px;
+    border-radius:50%;
+    background:var(--orange-soft);
+    border:1px solid var(--orange);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--display);
+    font-size:20px;
+    color:var(--orange);
+    flex-shrink:0;
+  }
+  .id-card-top h3{ font-size:20px; color:var(--cream); text-transform:uppercase; }
+  .id-card-top span{ font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:0.08em; }
+
+  .id-row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .id-row:last-child{ border-bottom:none; }
+  .id-row span:first-child{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .id-row span:last-child{ color:var(--cream); font-weight:500; text-align:right; }
+
+  /* ============ HOBBIES ============ */
+  .hobby-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+  }
+  .hobby-card{
+    background:var(--bg-card);
+    border:1px solid var(--line-strong);
+    border-radius:4px;
+    padding:36px;
+    position:relative;
+    overflow:hidden;
+    transition:transform 0.35s ease, border-color 0.35s ease;
+  }
+  .hobby-card:hover{ transform:translateY(-6px); }
+  .hobby-card .icon{ width:48px; height:48px; margin-bottom:24px; }
+  .hobby-card h3{
+    font-size:24px;
+    text-transform:uppercase;
+    color:var(--cream);
+    margin-bottom:14px;
+  }
+  .hobby-card p{ color:var(--muted); font-size:15px; }
+
+  .hobby-card.court{ border-color:rgba(232,89,12,0.35); }
+  .hobby-card.court:hover{ border-color:var(--orange); }
+  .hobby-card.court::after{
+    content:'';
+    position:absolute;
+    right:-60px; bottom:-60px;
+    width:200px; height:200px;
+    border:1px solid rgba(232,89,12,0.18);
+    border-radius:50%;
+  }
+
+  .hobby-card.tag{ border-color:rgba(61,103,172,0.35); }
+  .hobby-card.tag:hover{ border-color:var(--blue); }
+  .hobby-card.tag::after{
+    content:'';
+    position:absolute;
+    right:24px; top:24px;
+    width:64px; height:64px;
+    background:var(--blue-soft);
+    border-radius:50%;
+    z-index:0;
+  }
+  .hobby-card.tag .icon{ position:relative; z-index:1; }
+
+  /* ============ LANGUAGES — BOX SCORE ============ */
+  .scoreboard{
+    background:var(--bg-card);
+    border:1px solid var(--line-strong);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .scoreboard-head{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 2fr 0.8fr;
+    gap:16px;
+    padding:14px 28px;
+    background:var(--bg-alt);
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    border-bottom:1px solid var(--line-strong);
+  }
+  .lang-row{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 2fr 0.8fr;
+    gap:16px;
+    align-items:center;
+    padding:22px 28px;
+    border-bottom:1px solid var(--line);
+  }
+  .lang-row:last-child{ border-bottom:none; }
+  .lang-name{ display:flex; align-items:center; gap:12px; }
+  .lang-code{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--bg);
+    background:var(--orange);
+    width:30px; height:30px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .lang-row:nth-child(3) .lang-code{ background:var(--chalk); }
+  .lang-row:nth-child(4) .lang-code{ background:var(--blue); color:var(--cream); }
+  .lang-name b{ font-size:16px; color:var(--cream); text-transform:uppercase; }
+
+  .lang-level{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .lang-bar-track{
+    height:8px;
+    background:rgba(237,230,216,0.08);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .lang-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--orange), var(--chalk));
+    border-radius:4px;
+    transition:width 1.1s cubic-bezier(0.2,0.7,0.2,1);
+  }
+
+  .lang-pts{
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--cream);
+    text-align:right;
+  }
+
+  /* ============ CONTACT ============ */
+  .contact{ padding-bottom:80px; }
+  .contact-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:32px;
+    border:1px solid var(--line-strong);
+    background:var(--bg-card);
+    border-radius:4px;
+    padding:48px;
+  }
+  .contact h2{
+    font-size:clamp(32px,6vw,56px);
+    text-transform:uppercase;
+    color:var(--cream);
+    max-width:480px;
+  }
+  .contact h2 span{ color:var(--orange); }
+  .contact-links{ display:flex; flex-direction:column; gap:14px; }
+  .contact-links a{
+    font-family:var(--mono);
+    font-size:14px;
+    letter-spacing:0.04em;
+    color:var(--muted);
+    border-bottom:1px solid transparent;
+    transition:color 0.25s ease, border-color 0.25s ease;
+  }
+  .contact-links a:hover{ color:var(--orange); border-color:var(--orange); }
+
+  footer{
+    text-align:center;
+    padding:28px 0 48px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    color:var(--muted);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:860px){
+    .about .wrap{ grid-template-columns:1fr; }
+    .hobby-grid{ grid-template-columns:1fr; }
+    .hero-court{ opacity:0.3; }
+  }
+
+  @media (max-width:680px){
+    .wrap{ padding:0 20px; }
+    .nav-links{
+      position:fixed;
+      top:72px; right:0;
+      flex-direction:column;
+      background:var(--bg-alt);
+      width:220px;
+      padding:24px;
+      gap:20px;
+      border-left:1px solid var(--line-strong);
+      border-bottom:1px solid var(--line-strong);
+      transform:translateX(100%);
+      transition:transform 0.3s ease;
+    }
+    body.nav-open .nav-links{ transform:translateX(0); }
+    .nav-toggle{ display:flex; }
+    section{ padding:80px 0; }
+    .scoreboard-head{ display:none; }
+    .lang-row{
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    .lang-pts{ text-align:left; }
+    .contact-inner{ padding:32px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="#top" class="nav-logo">BK<span>.</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#court">On the Court</a></li>
+      <li><a href="#collection">Collection</a></li>
+      <li><a href="#languages">Languages</a></li>
+      <li><a href="#connect">Connect</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <svg class="hero-court" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="300" cy="300" r="280" stroke="#E8590C" stroke-opacity="0.18" stroke-width="1.5"/>
+    <circle cx="300" cy="300" r="120" stroke="#EDE6D8" stroke-opacity="0.10" stroke-width="1.5"/>
+    <path d="M40 60 A 340 340 0 0 0 40 540" stroke="#EDE6D8" stroke-opacity="0.12" stroke-width="1.5"/>
+    <line x1="40" y1="60" x2="40" y2="540" stroke="#EDE6D8" stroke-opacity="0.12" stroke-width="1.5"/>
+    <circle cx="300" cy="300" r="4" fill="#E8590C" fill-opacity="0.5"/>
+  </svg>
+  <div class="wrap hero-content">
+    <span class="eyebrow reveal">Seoul, South Korea &mdash; Konkuk University</span>
+    <h1 class="reveal">Baterkhemseg<span class="dot">.</span>KH</h1>
+    <p class="hero-tagline reveal">
+      A student who runs the floor like a point guard and tracks
+      sneaker drops like a scout report &mdash; <strong>three languages,
+      one rotation.</strong>
+    </p>
+    <div class="hero-meta reveal">
+      <div>School<b>Konkuk University</b></div>
+      <div>Plays<b>Basketball</b></div>
+      <div>Collects<b>Sneakers &amp; Streetwear</b></div>
+      <div>Speaks<b>KOR &middot; ENG &middot; MON</b></div>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL</div>
+</header>
+
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="about-text">
+      <div class="section-head">
+        <span class="eyebrow">About</span>
+        <h2>Off the bench, into it</h2>
+      </div>
+      <p>
+        I'm <strong>Baterkhemseg.KH</strong>, currently studying at
+        <strong>Konkuk University</strong> in Seoul. Most days split
+        pretty evenly between lecture halls, the court, and whatever
+        sneaker release is dropping that week.
+      </p>
+      <p>
+        Basketball is where I clear my head &mdash; pickup runs,
+        clean jumpers, and the kind of focus that doesn't come easy
+        anywhere else. Outside of that, I'm building a collection one
+        careful pickup at a time: pieces with a story, not just a price tag.
+      </p>
+      <p>
+        I move between <strong>Mongolian, Korean, and English</strong>
+        every single day &mdash; home language, campus language, and
+        the language the rest of the world runs on.
+      </p>
+    </div>
+    <div class="id-card reveal">
+      <div class="id-card-top">
+        <div class="id-avatar">BK</div>
+        <div>
+          <h3>Baterkhemseg.KH</h3>
+          <span>STUDENT ID &mdash; SEOUL, KR</span>
+        </div>
+      </div>
+      <div class="id-row"><span>School</span><span>Konkuk University</span></div>
+      <div class="id-row"><span>Status</span><span>Current Student</span></div>
+      <div class="id-row"><span>On Court</span><span>Basketball</span></div>
+      <div class="id-row"><span>Off Court</span><span>Sneaker &amp; Brand Collecting</span></div>
+      <div class="id-row"><span>Languages</span><span>3 &mdash; KOR / ENG / MON</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="court">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Hobbies</span>
+      <h2>What I'm into</h2>
+      <p>Two things that have nothing to do with grades, and everything to do with me.</p>
+    </div>
+    <div class="hobby-grid">
+      <div class="hobby-card court reveal">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 14h36M6 14c0 11 8 20 18 20s18-9 18-20M6 14c0-4 8-8 18-8s18 4 18 8" stroke="#E8590C" stroke-width="2" stroke-linecap="round"/>
+          <path d="M24 6v8M16 14c0 8 3.5 14 8 20M32 14c0 8-3.5 14-8 20" stroke="#E8590C" stroke-width="1.4" stroke-opacity="0.6"/>
+        </svg>
+        <h3 id="hoops">On the Court</h3>
+        <p>
+          Pickup games, early runs, and chasing a clean jumper. Basketball
+          is the one place where everything else goes quiet and the only
+          thing that matters is the next possession.
+        </p>
+      </div>
+      <div class="hobby-card tag reveal" id="collection">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M26 6 6 26v10a6 6 0 0 0 6 6h10L42 22a6 6 0 0 0 0-8.5L34.5 6A6 6 0 0 0 26 6Z" stroke="#3D67AC" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="30" cy="14" r="3" stroke="#3D67AC" stroke-width="2"/>
+        </svg>
+        <h3>The Collection</h3>
+        <p>
+          Limited drops, rare colorways, pieces worth holding onto.
+          I track releases the way other people track stock prices &mdash;
+          quality over quantity, always.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="languages">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Languages</span>
+      <h2>Box score</h2>
+      <p>Three languages, in rotation every single day.</p>
+    </div>
+    <div class="scoreboard reveal">
+      <div class="scoreboard-head">
+        <span>Language</span>
+        <span>Level</span>
+        <span>Fluency</span>
+        <span style="text-align:right">Score</span>
+      </div>
+
+      <div class="lang-row">
+        <div class="lang-name"><span class="lang-code">MN</span><b>Mongolian</b></div>
+        <div class="lang-level">Native</div>
+        <div class="lang-bar-track"><div class="lang-bar-fill" data-target="100"></div></div>
+        <div class="lang-pts">100</div>
+      </div>
+
+      <div class="lang-row">
+        <div class="lang-name"><span class="lang-code">KR</span><b>Korean</b></div>
+        <div class="lang-level">Fluent</div>
+        <div class="lang-bar-track"><div class="lang-bar-fill" data-target="90"></div></div>
+        <div class="lang-pts">90</div>
+      </div>
+
+      <div class="lang-row">
+        <div class="lang-name"><span class="lang-code">EN</span><b>English</b></div>
+        <div class="lang-level">Fluent</div>
+        <div class="lang-bar-track"><div class="lang-bar-fill" data-target="85"></div></div>
+        <div class="lang-pts">85</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="connect">
+  <div class="wrap">
+    <div class="contact-inner reveal">
+      <h2>Let's<br><span>connect.</span></h2>
+      <div class="contact-links">
+        <a href="mailto:[email protected]">[email protected]</a>
+        <a href="#">github.com/yourhandle</a>
+        <a href="#">instagram.com/yourhandle</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 BATERKHEMSEG.KH &mdash; SEOUL, SOUTH KOREA
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  navToggle.addEventListener('click', () => {
+    const isOpen = document.body.classList.toggle('nav-open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.body.classList.remove('nav-open');
+      navToggle.setAttribute('aria-expanded', false);
+    });
+  });
+
+  // Scroll reveal
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealEls = document.querySelectorAll('.reveal');
+
+  if (prefersReduced) {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+    document.querySelectorAll('.lang-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+
+          // Animate score bars when the scoreboard comes into view
+          if (entry.target.classList.contains('scoreboard')) {
+            entry.target.querySelectorAll('.lang-bar-fill').forEach(bar => {
+              requestAnimationFrame(() => {
+                bar.style.width = bar.dataset.target + '%';
+              });
+            });
+          }
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    revealEls.forEach(el => observer.observe(el));
+  }
+</script>
+
+</body>
+</html>
